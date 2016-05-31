@@ -6,14 +6,9 @@ def queryUrl(line):
     codeConv = parseMarket(code[0])
     url = urlBase+codeConv
     data = urllib2.urlopen(url).read();
-    kk = data.split('"',3)
-    tt = kk[1].split(',',10)
-    if(len(code[0])==6):
-        stockName = tt[0]
-    elif(len(code[0])==5):
-        stockName = tt[1]
-    retStr = code[0]+","+stockName+","+ tt[3]
-    return retStr
+    resultTuple = parseResult((code,data))
+    return (code,resultTuple)
+
     # f.seek(0,0)s
 
 def parseMarket(code):
@@ -25,18 +20,31 @@ def parseMarket(code):
     elif(len(code)==5):
         return 'hk'+code
 
-
+def parseResult(resultTuple):
+    fullContent = resultTuple[1].split('="', 3)
+    code = resultTuple[0]
+    content = fullContent[1].split(',', 10)
+    if (len(code[0]) == 6):
+        stockName = content[0]
+    elif (len(code[0]) == 5):
+        stockName = content[1]
+    retStr = code[0] + "," + stockName + "," + content[3]
+    return (retStr,content[3])
 
 f = open("E:/test.csv","r")
 fw =  open("E:/temp.csv","w")
 
+resultList =[]
 for line in f:
     dataline = queryUrl(line)
-    fw.write(dataline+"\n")
+    # resultList.append(dataline)
+    fw.write(str(dataline))
+    fw.write("\n")
+
 fw.close()
 f.close()
-os.remove("E:/test.csv")
-os.rename("E:/temp.csv","E:/test.csv")
+# os.remove("E:/test.csv")
+# os.rename("E:/temp.csv","E:/test.csv")
 # os.remove("E:/temp.csv")
 
 
