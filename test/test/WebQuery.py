@@ -11,7 +11,7 @@ def queryUrl(line):
         resultTuple = parseResult((code,data))
     else:
         codeConv=code[0]
-        resultTuple=['',1]
+        resultTuple=['',"1"]
     resultTuple.insert(0, codeConv)
     resultTuple.insert(1, number)
     return resultTuple
@@ -53,17 +53,18 @@ def refactorResult(list):
     for item in list:
        sum=sum+(string.atof(item[3])*string.atoi(item[1]))
     for val in list:
-        ratio = string.atof(val[3])*string.atoi(item[1])/sum
+        ratio = string.atof(val[3])*string.atoi(val[1])/sum
         val.append(format(ratio, '4.2%'))
     return list
 
 # main start
 urlBase =  "http://hq.sinajs.cn/list="
-f = open("E:/test.csv","r")
-fw =  open("E:/temp.csv","w")
+f = open("stockCalc.csv","r")
+fw =  open("temp.csv","w")
 
 resultList =[]
 for line in f:
+    line = line.strip('\n')
     dataline = queryUrl(line)
     resultList.append(dataline)
 
@@ -72,17 +73,14 @@ list = refactorResult(resultList)
 
     # resultList.append(dataline)
 for result in list:
-    for item in result:
-        fw.write(str(item))
-        fw.write(",")
-
+    strList = ",".join(result)
+    fw.write(strList)
     fw.write("\n")
 
 fw.close()
 f.close()
-# os.remove("E:/test.csv")
-# os.rename("E:/temp.csv","E:/test.csv")
-# os.remove("E:/temp.csv")
+os.remove("stockCalc.csv")
+os.rename("temp.csv","stockCalc.csv")
 
 
 
