@@ -44,16 +44,28 @@ def parseResult(resultTuple):
     # retStr = code[0] + "," + stockName + "," + content[3]
     list = []
     list.append(stockName)
-    list.append(content[3])
+    if(content[3]=="0.000"):#判断停牌
+        list.append(content[2])
+    else:
+        list.append(content[3])
     return list
 
 
 def refactorResult(list):
     sum = 0
+    # cr为汇率，港股默认使用.85
     for item in list:
-       sum=sum+(string.atof(item[3])*string.atoi(item[1]))
+        if(item[0].startswith("hk")):
+            cr=0.85
+        else:
+            cr=1
+        sum=sum+(string.atof(item[3])*string.atoi(item[1])*cr)
     for val in list:
-        ratio = string.atof(val[3])*string.atoi(val[1])/sum
+        if(val[0].startswith("hk")):
+            cr=0.85
+        else:
+            cr=1
+        ratio = string.atof(val[3])*string.atoi(val[1])*cr/sum
         val.append(format(ratio, '4.2%'))
     return list
 
