@@ -10,3 +10,4 @@
 buildNumber.properties
 config_center_client.log
 MANIFEST.MF
+*.csv
